@@ -1,4 +1,4 @@
-require "chess/version"
+require_relative "chess/version"
 
 module Chess
   # Your code goes here...
