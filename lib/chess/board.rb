@@ -100,34 +100,28 @@ module Chess
 					[x-5, y],[x-6, y],
 					[x-7, y]
 				]
-				# use while and each to add only unobstructed coordinates
-				# up_move.each do |move|
-				# 	while true
-				# 		if move.piece.nil?
-				# 			moves << move
-				# 		else
-				# 			return false
-				# 		end
-				# 	end
-				end
+				up_move = rook_filter(up_move, color)
 				down_move = [
 					[x+1, y],[x+2, y],
 					[x+3, y],[x+4, y],
 					[x+5, y],[x+6, y],
 					[x+7, y]
 				]
+				down_move = rook_filter(down_move, color)
 				left_move = [
 					[x, y-1],[x, y-2],
 					[x, y-3],[x, y-4],
 					[x, y-5],[x, y-6],
 					[x, y-7]
 				]
+				left_move = rook_filter(left_move, color)
 				right_move = [
 					[x, y+1],[x, y+2],
 					[x, y+3],[x, y+4],
 					[x, y+5],[x, y+6],
 					[x, y+7]
 				]
+				right_move = rook_filter(right_move, color)
 				moves = up_move + down_move + left_move + right_move
 			when "k"
 				moves = [
@@ -137,35 +131,93 @@ module Chess
 					[x+2,y-1],[x+1,y-2]
 				]
 			when "B"
-				moves = [
-					[x+1,y+1],[x-1,y-1],[x+1,y-1],[x-1,y+1],
-					[x+2,y+2],[x-2,y-2],[x+2,y-2],[x-2,y+2],
-					[x+3,y+3],[x-3,y-3],[x+3,y-3],[x-3,y+3],
-					[x+4,y+4],[x-4,y-4],[x+4,y-4],[x-4,y+4],
-					[x+5,y+5],[x-5,y-5],[x+5,y-5],[x-5,y+5],
-					[x+6,y+6],[x-6,y-6],[x+6,y-6],[x-6,y+6],
-					[x+7,y+7],[x-7,y-7],[x+7,y-7],[x-7,y+7]
+				ne_move = [
+					[x-1,y+1],[x-2,y+2],
+					[x-3,y+3],[x-4,y+4],
+					[x-5,y+5],[x-6,y+6],
+					[x-7,y+7],
 				]
+				ne_move = bishop_filter(ne_move, color)
+				se_move = [
+					[x+1,y+1],[x+2,y+2],
+					[x+3,y+3],[x+4,y+4],
+					[x+5,y+5],[x+6,y+6],
+					[x+7,y+7],
+				]
+				se_move = bishop_filter(se_move, color)	
+				sw_move = [
+					[x+1,y-1],[x+2,y-2],
+					[x+3,y-3],[x+4,y-4],
+					[x+5,y-5],[x+6,y-6],
+					[x+7,y-7],
+				]
+				sw_move = bishop_filter(sw_move, color)	
+				nw_move = [
+					[x-1,y-1],[x-2,y-2],
+					[x-3,y-3],[x-4,y-4],
+					[x-5,y-5],[x-6,y-6],
+					[x-7,y-7],
+				]
+				nw_move = bishop_filter(nw_move, color)
+				moves = ne_move + se_move + sw_move + nw_move				
 			when "Q"
-				moves = [
-					[x+1,y+1],[x-1,y-1],[x+1,y-1],[x-1,y+1],
-					[x+2,y+2],[x-2,y-2],[x+2,y-2],[x-2,y+2],
-					[x+3,y+3],[x-3,y-3],[x+3,y-3],[x-3,y+3],
-					[x+4,y+4],[x-4,y-4],[x+4,y-4],[x-4,y+4],
-					[x+5,y+5],[x-5,y-5],[x+5,y-5],[x-5,y+5],
-					[x+6,y+6],[x-6,y-6],[x+6,y-6],[x-6,y+6],
-					[x+7,y+7],[x-7,y-7],[x+7,y-7],[x-7,y+7]
-				] +
-				[
-					[x, 0],[0, y],
-					[x, 1],[1, y],
-					[x, 2],[2, y],
-					[x, 3],[3, y],
-					[x, 4],[4, y],
-					[x, 5],[5, y],
-					[x, 6],[6, y],
-					[x, 7],[7, y]					
+				ne_move = [
+					[x-1,y+1],[x-2,y+2],
+					[x-3,y+3],[x-4,y+4],
+					[x-5,y+5],[x-6,y+6],
+					[x-7,y+7],
 				]
+				ne_move = bishop_filter(ne_move, color)
+				se_move = [
+					[x+1,y+1],[x+2,y+2],
+					[x+3,y+3],[x+4,y+4],
+					[x+5,y+5],[x+6,y+6],
+					[x+7,y+7],
+				]
+				se_move = bishop_filter(se_move, color)	
+				sw_move = [
+					[x+1,y-1],[x+2,y-2],
+					[x+3,y-3],[x+4,y-4],
+					[x+5,y-5],[x+6,y-6],
+					[x+7,y-7],
+				]
+				sw_move = bishop_filter(sw_move, color)	
+				nw_move = [
+					[x-1,y-1],[x-2,y-2],
+					[x-3,y-3],[x-4,y-4],
+					[x-5,y-5],[x-6,y-6],
+					[x-7,y-7],
+				]
+				nw_move = bishop_filter(nw_move, color)				
+				up_move = [
+					[x-1, y],[x-2, y],
+					[x-3, y],[x-4, y],
+					[x-5, y],[x-6, y],
+					[x-7, y]
+				]
+				up_move = rook_filter(up_move, color)
+				down_move = [
+					[x+1, y],[x+2, y],
+					[x+3, y],[x+4, y],
+					[x+5, y],[x+6, y],
+					[x+7, y]
+				]
+				down_move = rook_filter(down_move, color)
+				left_move = [
+					[x, y-1],[x, y-2],
+					[x, y-3],[x, y-4],
+					[x, y-5],[x, y-6],
+					[x, y-7]
+				]
+				left_move = rook_filter(left_move, color)
+				right_move = [
+					[x, y+1],[x, y+2],
+					[x, y+3],[x, y+4],
+					[x, y+5],[x, y+6],
+					[x, y+7]
+				]
+				right_move = rook_filter(right_move, color)
+				moves = up_move + down_move + left_move + right_move + ne_move + se_move + sw_move + nw_move						
 			when "K"
 				moves = [
 					[x+1,y],[x-1,y],
@@ -179,7 +231,46 @@ module Chess
 			end
 			moves.select! { |move| move[0] >= 0 && move[0] <= 7 && move[1] >= 0 && move[1] <= 7 }
 			moves.select! { |move| grid[move.first][move.last].color != color }
+			print moves
+			puts
 			moves
 		end
+
+		def rook_filter(array, color)
+			temp = []
+			array.each do |move|
+				break if grid[move.first].nil?
+				break if grid[move.first][move.last].nil?				
+				x = grid[move.first][move.last]
+				if x.color != nil && x.color != color
+					temp << move
+					break
+				elsif x.color.nil?
+					temp << move
+				else
+					break
+				end
+			end
+			return temp
+		end
+
+		def bishop_filter(array, color)
+			temp = []
+			array.each do |move|
+				break if grid[move.first].nil?
+				break if grid[move.first][move.last].nil?
+				x = grid[move.first][move.last]
+				if x.color != nil && x.color != color
+					temp << move
+					break
+				elsif x.color.nil?
+					temp << move
+				else
+					break
+				end
+			end
+			return temp
+		end		
+
 	end
 end
