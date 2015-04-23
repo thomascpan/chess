@@ -6,5 +6,5 @@ end
 
 require_relative "./chess/cell.rb"
 require_relative "./chess/board.rb"
-# require_relative "./chess/game.rb"
-# require_relative "./chess/player.rb"
+require_relative "./chess/game.rb"
+require_relative "./chess/player.rb"

@@ -1,9 +1,10 @@
 module Chess
 	class Board
-		attr_reader :grid
+		attr_accessor :grid
 
 		def initialize(grid = default_grid)
-			@grid = grid			
+			@grid = grid
+			@last_grid = "hello"
 		end
 
 		def formatted_grid
@@ -13,22 +14,222 @@ module Chess
 			end
 		end
 
-		# def select_piece(row,column)
-		# 	grid[row][column]
-		# end
-
 		def move_piece(old_pos, new_pos)
+			record_grid
 			x = grid[old_pos.first][old_pos.last]
 			y = grid[new_pos.first][new_pos.last]
 			color = x.color
-			if possible_moves(x.piece, old_pos, color).include?(new_pos)
+			# Castling Condition
+			if castling_condition?(x, color, old_pos, new_pos)
+				grid[new_pos.first][new_pos.last] = grid[old_pos.first][old_pos.last]
+				grid[new_pos.first][new_pos.last].moved = true
+				grid[old_pos.first][old_pos.last] = Cell.new				
+			# En Passant Condition
+			elsif en_passant_condition?(x, color, old_pos, new_pos)
 				grid[new_pos.first][new_pos.last] = grid[old_pos.first][old_pos.last]
 				grid[new_pos.first][new_pos.last].moved = true
 				grid[old_pos.first][old_pos.last] = Cell.new
+			# Normal moves
+			elsif possible_moves(x.piece, old_pos, color).include?(new_pos)
+				grid[new_pos.first][new_pos.last] = grid[old_pos.first][old_pos.last]			
+				grid[new_pos.first][new_pos.last].moved = true
+				grid[old_pos.first][old_pos.last] = Cell.new
+				if grid[new_pos.first][new_pos.last].piece == "P"
+					if old_pos.first == new_pos.first - 2 || old_pos.first == new_pos.first + 2
+						grid[new_pos.first][new_pos.last].double = true
+					end
+				end
 			else
 				puts "Invalid move! Please try again!"
-				false
+				# Will cause infinite loop because parameters don't change. Need to fix later. 
+				# return move_piece(old_pos, new_pos)
+				return false
 			end
+			# Check if self_check
+			if check?(color)
+				undo_move
+				puts "Invalid move! Please try again!"
+				return false
+			end
+		end
+
+		def double_refresh
+			grid.flatten.each do |cell|
+				if cell.piece == "P"
+					cell.double = false
+				end
+			end
+		end
+
+		def game_over()
+			return :winner if checkmate?
+			return :draw if stalemate?
+			false
+		end
+
+		def get_coordinates(cell_object)
+			x = grid.index { |e| e.include?(cell_object) }
+			y = grid[x].index { |e| e == cell_object }
+			coordinates = [x, y]
+			return coordinates
+		end
+
+		def record_grid
+			@last_grid = Marshal::load(Marshal.dump(@grid.clone))
+		end
+
+		def undo_move
+			@grid = @last_grid
+		end
+
+		# Method that determines if you've self_checked after your move. 
+		def check?(color)
+			# return true if king is checked
+			# King info: 
+			king_object = (grid.flatten.select { |cell| cell.piece == "K" && cell.color == color }).first
+			x_king = grid.index { |e| e.include?(king_object) }
+			y_king = grid[x_king].index { |e| e == king_object }
+			king_coordinate = [x_king, y_king]
+			# Create a list of enemy unit cell objects
+			enemy_objects = (grid.flatten.select { |cell| cell.color != color && cell.color != nil })
+			# Create a list of enemy unit cell object's coordinates
+			enemy_coordinates = []
+			enemy_objects.each do |cell_object|
+				enemy_coordinates << get_coordinates(cell_object)
+			end
+			enemies_possible_moves = []
+			# Select moves that are not included in enemy's possible moves. 
+			enemy_coordinates.each do |coordinates|
+				enemy_piece = grid[coordinates.first][coordinates.last].piece
+				enemy_color = grid[coordinates.first][coordinates.last].color
+				enemies_possible_moves << possible_moves(enemy_piece, coordinates, enemy_color)
+			end
+			enemies_possible_moves.delete([])
+			enemies_possible_moves.flatten!(1)
+			return true if enemies_possible_moves.include?(king_coordinate)
+			false
+		end
+
+		# Method that determiens if you've been check-mated by your enemy
+		def checkmate?(color)
+			# King info: 
+			king_object = (grid.flatten.select { |cell| cell.piece == "K" && cell.color == color }).first
+			x_king = grid.index { |e| e.include?(king_object) }
+			y_king = grid[x_king].index { |e| e == king_object }
+			king_coordinate = [x_king, y_king]	
+			# Conditions:
+			# King's possible moves will also be in check
+			return false if possible_moves_check?(king_coordinate, color) == false
+			return false if block?(color) == true
+			true
+		end
+
+		def possible_moves_check?(king_coordinate, color)
+			king_possible_moves = possible_moves("K", king_coordinate, color)
+			enemy_objects = (grid.flatten.select { |cell| cell.color != color && cell.color != nil })
+			# Create a list of enemy unit cell object's coordinates
+			enemy_coordinates = []
+			enemy_objects.each do |cell_object|
+				enemy_coordinates << get_coordinates(cell_object)
+			end
+			enemies_possible_moves = []
+			# Select moves that are not included in enemy's possible moves. 
+			enemy_coordinates.each do |coordinates|
+				enemy_piece = grid[coordinates.first][coordinates.last].piece
+				enemy_color = grid[coordinates.first][coordinates.last].color
+				enemies_possible_moves << possible_moves(enemy_piece, coordinates, enemy_color)
+			end
+			enemies_possible_moves.delete([])
+			enemies_possible_moves.flatten!(1)
+			king_possible_moves.all? do |e|
+				enemies_possible_moves.include?(e)
+			end
+		end
+
+		# Find the checker except for knight. get the position of the checker and the position of the king. Create a list of all coordinates between the two.
+		# Determine if any own unit possible moves can go there. If unit blocking check is moved, it will call it an invalid move still. 
+		def block?(color)
+			# King info: 
+			king_object = (grid.flatten.select { |cell| cell.piece == "K" && cell.color == color }).first
+			x_king = grid.index { |e| e.include?(king_object) }
+			y_king = grid[x_king].index { |e| e == king_object }
+			king_coordinate = [x_king, y_king]
+			# Create a list of enemy unit cell objects
+			enemy_objects = (grid.flatten.select { |cell| cell.color != color && cell.color != nil })
+			# Create a list of enemy unit cell object's coordinates
+			enemy_coordinates = []
+			enemy_objects.each do |cell_object|
+				enemy_coordinates << get_coordinates(cell_object)
+			end
+			# Select moves that are not included in enemy's possible moves.
+			enemy_checker = enemy_coordinates.find do |coordinates|
+				enemy_piece = grid[coordinates.first][coordinates.last].piece
+				enemy_color = grid[coordinates.first][coordinates.last].color
+				possible_moves(enemy_piece, coordinates, enemy_color).include?(king_coordinate)
+			end
+			list = []
+			# horizontal
+			if grid[enemy_checker.first][enemy_checker.last].piece == "k"
+				list = [[enemy_checker]]
+			elsif king_coordinate.first == enemy_checker.first
+				if king_coordinate.last < enemy_checker.last 
+					list = (king_coordinate.last..enemy_checker.last).to_a
+					list.map! { |e| e = [king_coordinate.first, e] }
+				else
+					list = (enemy_checker.last..king_coordinate.last).to_a
+					list.map! { |e| e = [king_coordinate.first, e]}
+				end
+			# vertical
+			elsif king_coordinate.last == king_coordinate.last
+				if king_coordinate.first < enemy_checker.first 
+					list = (king_coordinate.first..enemy_checker.first).to_a
+					list.map! { |e| e = [e, king_coordinate.last] }
+				else
+					list = (enemy_checker.first..king_coordinate.first).to_a
+					list.map! { |e| e = [e, king_coordinate.last]}
+				end
+			# Diagonal
+			else 
+				if king_coordinate.first < enemy_checker.first
+					if king_coordinate.last < enemy_checker.last
+						a = (king_coordinate.first..enemy_checker.first).to_a
+						b = (king_coordinate.last..enemy_checker.last).to_a
+					else
+						a = (king_coordinate.first..enemy_checker.first).to_a
+						b = (enemy_checker.last..king_coordinate.last).to_a.reverse
+					end
+				else
+					if enemy_checker.last < king_coordinate.last 
+						a = (enemy_checker.first..king_coordinate.first).to_a
+						b = (enemy_checker.last..king_coordinate.last).to_a
+					else
+						a = (enemy_checker.first..king_coordinate.first).to_a
+						b = (king_coordinate.last..enemy_checker.last).to_a.reverse		
+					end
+				end
+				list = a.each_with_index.map { |e, i| e = [e, b[i]] }
+			end
+			list.delete(king_coordinate)
+
+			my_objects = (grid.flatten.select { |cell| cell.color == color && cell.piece != "K"})
+			# Create a list of enemy unit cell object's coordinates
+			my_coordinates = []
+			my_objects.each do |cell_object|
+				my_coordinates << get_coordinates(cell_object)
+			end
+			my_possible_moves = []
+			# Select moves that are not included in enemy's possible moves. 
+			my_coordinates.each do |coordinates|
+				my_piece = grid[coordinates.first][coordinates.last].piece
+				my_color = grid[coordinates.first][coordinates.last].color
+				my_possible_moves << possible_moves(my_piece, coordinates, my_color)
+			end
+			my_possible_moves.delete([])
+			my_possible_moves.flatten!(1)
+			list.each do |e|
+				return true if my_possible_moves.include?(e)
+			end
+			false
 		end
 
 		private
@@ -79,19 +280,28 @@ module Chess
 				if color == "W"
 					moves = [
 						[x-1, y],
-						[x-1, y-1],
-						[x-1, y+1],
 						[x-2, y]
 					]
-					moves.pop if grid[x][y].moved 
-				elsif "B"
+					moves.pop if grid[x][y].moved
+					unless grid[x-1][y-1].nil? 
+						moves << [x-1, y-1] if grid[x-1][y-1].piece != nil
+					end
+					unless grid[x-1][y+1].nil?		
+						moves << [x-1, y+1] if grid[x-1][y+1].piece != nil
+					end					
+				elsif color == "B"
 					moves = [
 						[x+1, y],
-						[x+1, y-1],
-						[x+1, y+1],
 						[x+2, y]
 					]
-					moves.pop if grid[x][y].moved 					
+					moves.pop if grid[x][y].moved
+					unless grid[x+1][y-1].nil?
+						moves << [x+1, y-1] if grid[x+1][y-1].piece != nil
+					end
+					unless grid[x+1][y+1].nil?
+						moves << [x+1, y+1] if grid[x+1][y+1].piece != nil
+					end
+				else
 				end
 			when "R"
 				up_move = [
@@ -221,19 +431,52 @@ module Chess
 			when "K"
 				moves = [
 					[x+1,y],[x-1,y],
-					[x,y+1],[x,y+1],
+					[x,y+1],[x,y-1],
 					[x+1,y+1],[x+1,y-1],
-					[x-1,y+1],[x-1,y-1],
-					[x, y+2],[x,y-2]
+					[x-1,y+1],[x-1,y-1]
 				]
-				2.times { moves.pop } if grid[x][y].moved 					
-			else
+				moves
 			end
 			moves.select! { |move| move[0] >= 0 && move[0] <= 7 && move[1] >= 0 && move[1] <= 7 }
-			moves.select! { |move| grid[move.first][move.last].color != color }
-			print moves
-			puts
+			moves.select! { |move| grid[move.first][move.last].color != color }	
 			moves
+		end
+
+		def stalemate?(color)
+			return false if check?(color) == true
+			my_objects = (grid.flatten.select { |cell| cell.color == color })
+			# Create a list of enemy unit cell object's coordinates
+			my_coordinates = []
+			my_objects.each do |cell_object|
+				my_coordinates << get_coordinates(cell_object)
+			end
+			my_possible_moves = []
+			# Select moves that are not included in enemy's possible moves. 
+			my_coordinates.each do |coordinates|
+				my_piece = grid[coordinates.first][coordinates.last].piece
+				my_color = grid[coordinates.first][coordinates.last].color
+				my_possible_moves << possible_moves(my_piece, coordinates, my_color)
+			end
+			my_possible_moves.delete([])
+			my_possible_moves.flatten!(1)
+			enemy_objects = (grid.flatten.select { |cell| cell.color != color && cell.color != nil })
+			# Create a list of enemy unit cell object's coordinates
+			enemy_coordinates = []
+			enemy_objects.each do |cell_object|
+				enemy_coordinates << get_coordinates(cell_object)
+			end
+			enemies_possible_moves = []
+			# Select moves that are not included in enemy's possible moves. 
+			enemy_coordinates.each do |coordinates|
+				enemy_piece = grid[coordinates.first][coordinates.last].piece
+				enemy_color = grid[coordinates.first][coordinates.last].color
+				enemies_possible_moves << possible_moves(enemy_piece, coordinates, enemy_color)
+			end
+			enemies_possible_moves.delete([])
+			enemies_possible_moves.flatten!(1)
+			my_possible_moves.all? do |e|
+				enemies_possible_moves.include?(e)
+			end			
 		end
 
 		def rook_filter(array, color)
@@ -270,7 +513,50 @@ module Chess
 				end
 			end
 			return temp
-		end		
+		end
 
+		def castling_condition?(unit, color, old_pos, new_pos)
+			return false if unit.piece != "K"
+			if unit.color == "B"
+				if new_pos.last == old_pos.last + 2 && grid[0][5].piece.nil? && grid[0][6].piece.nil? && grid[0][7].moved == false
+					grid[0][5] = grid[0][7]
+					grid[0][5].moved = true
+					grid[0][7] = Cell.new
+					return true
+				elsif new_pos.last == old_pos.last - 2 && grid[0][3].piece.nil? && grid[0][2].piece.nil? && grid[0][1].piece.nil? && grid[0][0].moved == false
+					grid[0][3] = grid[0][0]
+					grid[0][3].moved = true
+					grid[0][0] = Cell.new					
+					return true
+				end
+			elsif unit.color == "W"
+				if new_pos.last == old_pos.last + 2 && grid[7][5].piece.nil? && grid[7][6].piece.nil? && grid[7][7].moved == false
+					grid[7][5] = grid[7][7]
+					grid[7][5].moved = true
+					grid[7][7] = Cell.new					
+					return true
+				elsif new_pos.last == old_pos.last - 2 && grid[7][3].piece.nil? && grid[7][2].piece.nil? && grid[7][1].piece.nil? && grid[7][0].moved == false
+					grid[7][3] = grid[7][0]
+					grid[7][3].moved = true
+					grid[7][0] = Cell.new					
+					return true
+				end
+			end
+			return false
+		end
+
+		# Method to set all cell.double back to false. For en-passant
+		def en_passant_condition?(unit, color, old_pos, new_pos)
+			return false if unit.piece != "P"
+			return false if new_pos.last == old_pos.last
+			current_pos = grid[old_pos.first][old_pos.last]
+			potential_target = @grid[old_pos.first][new_pos.last]
+			if potential_target.piece == "P" && potential_target.double == true
+				grid[old_pos.first][new_pos.last] = Cell.new
+				return true
+			else
+				return false
+			end
+		end
 	end
 end
