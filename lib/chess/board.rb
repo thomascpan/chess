@@ -10,7 +10,7 @@ module Chess
 		def formatted_grid
 			puts "    A   B   C   D   E   F   G   H"
 			grid.each_with_index do |row, index|
-				puts "#{index+1} #{row.map { |cell| cell.piece.nil? ? "[  ]" : "[#{cell.piece}#{cell.color}]" }.join("")}"
+				puts "#{grid.length-index} #{row.map { |cell| cell.piece.nil? ? "[  ]" : "[#{cell.piece}#{cell.color}]" }.join("")}"
 			end
 		end
 
@@ -40,7 +40,7 @@ module Chess
 					end
 				end
 			else
-				puts "Invalid move! Please try again!"
+				puts "Invalid move! Please try again!(A)"
 				# Will cause infinite loop because parameters don't change. Need to fix later. 
 				# return move_piece(old_pos, new_pos)
 				return false
@@ -48,11 +48,12 @@ module Chess
 			# Check if self_check
 			if check?(color)
 				undo_move
-				puts "Invalid move! Please try again!"
+				puts "Invalid move! Please try again!(B)"
 				return false
 			end
 		end
 
+		# place at begining of move_piece only for own pieces
 		def double_refresh
 			grid.flatten.each do |cell|
 				if cell.piece == "P"
@@ -61,9 +62,12 @@ module Chess
 			end
 		end
 
-		def game_over()
-			return :winner if checkmate?
-			return :draw if stalemate?
+		def game_over(color)
+			if check?(color)
+				return :winner if checkmate?(color)
+				puts "Check!"
+			end
+			return :draw if stalemate?(color)
 			false
 		end
 
@@ -116,10 +120,11 @@ module Chess
 			king_object = (grid.flatten.select { |cell| cell.piece == "K" && cell.color == color }).first
 			x_king = grid.index { |e| e.include?(king_object) }
 			y_king = grid[x_king].index { |e| e == king_object }
-			king_coordinate = [x_king, y_king]	
+			king_coordinate = [x_king, y_king]
 			# Conditions:
 			# King's possible moves will also be in check
 			return false if possible_moves_check?(king_coordinate, color) == false
+			# No one can block or kill enemy checker
 			return false if block?(color) == true
 			true
 		end
@@ -167,6 +172,7 @@ module Chess
 				enemy_color = grid[coordinates.first][coordinates.last].color
 				possible_moves(enemy_piece, coordinates, enemy_color).include?(king_coordinate)
 			end
+
 			list = []
 			# horizontal
 			if grid[enemy_checker.first][enemy_checker.last].piece == "k"
@@ -180,7 +186,7 @@ module Chess
 					list.map! { |e| e = [king_coordinate.first, e]}
 				end
 			# vertical
-			elsif king_coordinate.last == king_coordinate.last
+			elsif king_coordinate.last == enemy_checker.last
 				if king_coordinate.first < enemy_checker.first 
 					list = (king_coordinate.first..enemy_checker.first).to_a
 					list.map! { |e| e = [e, king_coordinate.last] }
@@ -204,7 +210,7 @@ module Chess
 						b = (enemy_checker.last..king_coordinate.last).to_a
 					else
 						a = (enemy_checker.first..king_coordinate.first).to_a
-						b = (king_coordinate.last..enemy_checker.last).to_a.reverse		
+						b = (king_coordinate.last..enemy_checker.last).to_a.reverse
 					end
 				end
 				list = a.each_with_index.map { |e, i| e = [e, b[i]] }
@@ -282,19 +288,21 @@ module Chess
 						[x-1, y],
 						[x-2, y]
 					]
-					moves.pop if grid[x][y].moved
+					moves.pop if grid[x][y].moved || grid[x-2][y].piece != nil
+					moves.delete_at(0) if grid[x-1][y] != nil
 					unless grid[x-1][y-1].nil? 
 						moves << [x-1, y-1] if grid[x-1][y-1].piece != nil
 					end
 					unless grid[x-1][y+1].nil?		
 						moves << [x-1, y+1] if grid[x-1][y+1].piece != nil
-					end					
+					end
 				elsif color == "B"
 					moves = [
 						[x+1, y],
 						[x+2, y]
 					]
-					moves.pop if grid[x][y].moved
+					moves.pop if grid[x][y].moved || grid[x+2][y].piece != nil
+					moves.delete_at(0) if grid[x+1][y] != nil
 					unless grid[x+1][y-1].nil?
 						moves << [x+1, y-1] if grid[x+1][y-1].piece != nil
 					end
