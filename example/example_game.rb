@@ -3,7 +3,7 @@ require_relative "../lib/chess.rb"
 player_one = Chess::Player.new("player_one", "B")
 player_two = Chess::Player.new("player_two", "W")
 players = [player_one, player_two]
-x = Chess::Game.new(players).play
+x = Chess::Game.new(players).menu
 
 # x = Chess::Board.new
 # x.grid[0][0] = Chess::Cell.new
