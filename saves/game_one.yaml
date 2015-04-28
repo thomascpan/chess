@@ -1,9 +1,9 @@
 --- !ruby/object:Chess::Game
 players:
-- &19035996 !ruby/object:Chess::Player
+- &19552104 !ruby/object:Chess::Player
   name: player_one
   color: B
-- &18606108 !ruby/object:Chess::Player
+- &19097628 !ruby/object:Chess::Player
   name: player_two
   color: W
 board: !ruby/object:Chess::Board
@@ -649,5 +649,5 @@ board: !ruby/object:Chess::Board
       color: W
       moved: false
       double: false
-current_player: *19035996
-other_player: *18606108
+current_player: *19552104
+other_player: *19097628
