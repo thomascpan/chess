@@ -20,6 +20,11 @@ Enter first the first letter of the option to proceed.
 Load or Delete a saved game by entering the file name. Ex. game_01.yaml
 
 
+#### Save ####
+
+Save a game by entering the file name without file format. Ex. game_01
+
+
 #### Start ####
 
 A player will be randomly selected to go first. 
