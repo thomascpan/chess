@@ -1,31 +1,61 @@
-# Chess
+Project: Chess
 
-TODO: Write a gem description
+Link: [Project: Chess](http://www.theodinproject.com/ruby-programming/ruby-final-project)
 
-## Installation
+Description: A Command Line Interface of [Chess](https://en.wikipedia.org/wiki/Chess). Regular and Special moves are included within the game's logic. Save and Load functionality also included. Users can can at anytime during a game and resume playing later. 
 
-Add this line to your application's Gemfile:
+Author(s): Thomas Pan
 
-```ruby
-gem 'chess'
+Instructions: Run game with `$ruby example/example_game.rb`. 
+
+###Gameplay
+
 ```
+Game menu has four options: (l)oad a game, (s)tart a new game, (d)elete a game, or (q)uit. 
 
-And then execute:
+Enter first the first letter of the option to proceed. 
 
-    $ bundle
+#### Load/Delete ####
 
-Or install it yourself as:
+Load or Delete a saved game by entering the file name. Ex. game_01.yaml
 
-    $ gem install chess
 
-## Usage
+#### Start ####
 
-TODO: Write usage instructions here
+A player will be randomly selected to go first. 
 
-## Contributing
+To make a move, first select a piece by entering the coordinates. i.e. `a2`
+After, select the coordinate where you want to move the piece. i.e. `a4`
 
-1. Fork it ( https://github.com/[my-github-username]/chess/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
+Game will prompt user to try again if move is invalid. 
+Game will notify if a player is in check, and the game will end when a player is check mated. 
+
+    A   B   C   D   E   F   G   H
+8 [RB][kB][BB][QB][KB][BB][kB][RB]
+7 [PB][PB][PB][PB][PB][PB][PB][PB]
+6 [  ][  ][  ][  ][  ][  ][  ][  ]
+5 [  ][  ][  ][  ][  ][  ][  ][  ]
+4 [  ][  ][  ][  ][  ][  ][  ][  ]
+3 [  ][  ][  ][  ][  ][  ][  ][  ]
+2 [PW][PW][PW][PW][PW][PW][PW][PW]
+1 [RW][kW][BW][QW][KW][BW][kW][RW]
+
+White Player's Move:
+d2
+d4
+
+    A   B   C   D   E   F   G   H
+8 [RB][kB][BB][QB][KB][BB][kB][RB]
+7 [PB][PB][PB][PB][PB][PB][PB][PB]
+6 [  ][  ][  ][  ][  ][  ][  ][  ]
+5 [  ][  ][  ][  ][  ][  ][  ][  ]
+4 [  ][  ][  ][PW][  ][  ][  ][  ]
+3 [  ][  ][  ][  ][  ][  ][  ][  ]
+2 [PW][PW][PW][  ][PW][PW][PW][PW]
+1 [RW][kW][BW][QW][KW][BW][kW][RW]
+
+Black Player's Move:
+f7
+f5
+
+```
