@@ -40,15 +40,11 @@ module Chess
 					end
 				end
 			else
-				puts "Invalid move! Please try again!(A)"
-				# Will cause infinite loop because parameters don't change. Need to fix later. 
-				# return move_piece(old_pos, new_pos)
 				return false
 			end
 			# Check if self_check
 			if check?(color)
 				undo_move
-				puts "Invalid move! Please try again!(B)"
 				return false
 			end
 		end
@@ -289,7 +285,7 @@ module Chess
 						[x-2, y]
 					]
 					moves.pop if grid[x][y].moved || grid[x-2][y].piece != nil
-					moves.delete_at(0) if grid[x-1][y] != nil
+					moves.delete_at(0) if grid[x-1][y].piece != nil
 					unless grid[x-1][y-1].nil? 
 						moves << [x-1, y-1] if grid[x-1][y-1].piece != nil
 					end
@@ -302,14 +298,13 @@ module Chess
 						[x+2, y]
 					]
 					moves.pop if grid[x][y].moved || grid[x+2][y].piece != nil
-					moves.delete_at(0) if grid[x+1][y] != nil
+					moves.delete_at(0) if grid[x+1][y].piece != nil
 					unless grid[x+1][y-1].nil?
 						moves << [x+1, y-1] if grid[x+1][y-1].piece != nil
 					end
 					unless grid[x+1][y+1].nil?
 						moves << [x+1, y+1] if grid[x+1][y+1].piece != nil
 					end
-				else
 				end
 			when "R"
 				up_move = [
