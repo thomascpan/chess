@@ -87,14 +87,14 @@ module Chess
 			end
 
 			def get_move(first = false, human_move = gets.chomp)
-				if human_move !~ /[a-hA-H][0-9]/
-					puts "Invalid Move"
-					return get_move(true)
-				end
 				if human_move == 'save'
 					save_game
 					return menu
 				end
+				if human_move !~ /[a-hA-H][0-9]/
+					puts "Invalid Move"
+					return get_move(true)
+				end				
 				return menu if human_move == 'menu'
 				human_move = human_move.split('')
 				human_move[0] = human_move_to_coordinate(human_move[0])
