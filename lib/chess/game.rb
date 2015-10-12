@@ -123,10 +123,10 @@ module Chess
 				saves = check_save_files
 				puts saves
 
-				puts "Enter the file name you wish to load. i.e 'saves/hello.yaml'."
+				puts "Enter the file name you wish to load. i.e 'hello.yaml'."
 				load_file = gets.strip
-				yaml = "#{load_file}"
-				if saves.include?(yaml)
+				yaml = "saves/#{load_file}"
+				if saves.include?(load_file)
 					load = YAML::load_file(yaml)
 					# return load.game_control
 					return load.game_control
@@ -138,13 +138,12 @@ module Chess
 
 			def check_save_files
 				saves = Dir.glob('saves/*')
+				saves.map! {|e| e[6, e.length]}
 				if saves.empty?
 					puts 'No save files.'
 					return menu
 				end
 				puts 'Current saves:'
-				puts saves.join (', ')
-				puts "\n"
 				saves
 			end
 
