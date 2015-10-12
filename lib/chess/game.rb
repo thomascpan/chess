@@ -91,11 +91,11 @@ module Chess
 					save_game
 					return menu
 				end
+				return menu if human_move == 'menu'
 				if human_move !~ /[a-hA-H][0-9]/
 					puts "Invalid Move"
 					return get_move(true)
 				end				
-				return menu if human_move == 'menu'
 				human_move = human_move.split('')
 				human_move[0] = human_move_to_coordinate(human_move[0])
 				human_move[1] = human_move_to_coordinate(human_move[1])
@@ -123,9 +123,9 @@ module Chess
 				saves = check_save_files
 				puts saves
 
-				puts "Enter the file name you wish to load."
+				puts "Enter the file name you wish to load. i.e 'saves/hello.yaml'."
 				load_file = gets.strip
-				yaml = "saves/#{load_file}"
+				yaml = "#{load_file}"
 				if saves.include?(yaml)
 					load = YAML::load_file(yaml)
 					# return load.game_control
