@@ -1,9 +1,9 @@
 --- !ruby/object:Chess::Game
 players:
-- &1 !ruby/object:Chess::Player
+- &2 !ruby/object:Chess::Player
   name: player_one
   color: B
-- &2 !ruby/object:Chess::Player
+- &1 !ruby/object:Chess::Player
   name: player_two
   color: W
 board: !ruby/object:Chess::Board
@@ -49,8 +49,8 @@ board: !ruby/object:Chess::Board
       moved: false
       double: false
   - - !ruby/object:Chess::Cell
-      piece: P
-      color: B
+      piece: 
+      color: 
       moved: false
       double: false
     - !ruby/object:Chess::Cell
@@ -174,10 +174,10 @@ board: !ruby/object:Chess::Board
       moved: false
       double: false
     - !ruby/object:Chess::Cell
-      piece: 
-      color: 
-      moved: false
-      double: false
+      piece: P
+      color: B
+      moved: true
+      double: true
     - !ruby/object:Chess::Cell
       piece: 
       color: 
@@ -254,8 +254,8 @@ board: !ruby/object:Chess::Board
       moved: false
       double: false
     - !ruby/object:Chess::Cell
-      piece: P
-      color: W
+      piece: 
+      color: 
       moved: false
       double: false
     - !ruby/object:Chess::Cell
@@ -328,6 +328,326 @@ board: !ruby/object:Chess::Board
       color: W
       moved: false
       double: false
-  last_grid: hello
+  last_grid:
+  - - !ruby/object:Chess::Cell
+      piece: R
+      color: B
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: k
+      color: B
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: B
+      color: B
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: Q
+      color: B
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: K
+      color: B
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: B
+      color: B
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: k
+      color: B
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: R
+      color: B
+      moved: false
+      double: false
+  - - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: P
+      color: B
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: P
+      color: B
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: P
+      color: B
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: P
+      color: B
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: P
+      color: B
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: P
+      color: B
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: P
+      color: B
+      moved: false
+      double: false
+  - - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+  - - !ruby/object:Chess::Cell
+      piece: P
+      color: B
+      moved: true
+      double: true
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+  - - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: P
+      color: W
+      moved: true
+      double: true
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+  - - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+  - - !ruby/object:Chess::Cell
+      piece: P
+      color: W
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: 
+      color: 
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: P
+      color: W
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: P
+      color: W
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: P
+      color: W
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: P
+      color: W
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: P
+      color: W
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: P
+      color: W
+      moved: false
+      double: false
+  - - !ruby/object:Chess::Cell
+      piece: R
+      color: W
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: k
+      color: W
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: B
+      color: W
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: Q
+      color: W
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: K
+      color: W
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: B
+      color: W
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: k
+      color: W
+      moved: false
+      double: false
+    - !ruby/object:Chess::Cell
+      piece: R
+      color: W
+      moved: false
+      double: false
 current_player: *1
 other_player: *2

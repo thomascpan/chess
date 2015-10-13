@@ -87,11 +87,11 @@ module Chess
 			end
 
 			def get_move(first = false, human_move = gets.upcase.chomp)
-				if human_move == 'save'
+				if human_move == 'SAVE'
 					save_game
 					return menu
 				end
-				return menu if human_move == 'menu'
+				return menu if human_move == 'MENU'
 				if human_move !~ /[a-hA-H][0-9]/
 					puts "Invalid Move"
 					return get_move(true)
@@ -113,7 +113,7 @@ module Chess
 			def save_game
 				yaml = YAML::dump(self)
 				puts 'Enter save file name (no spaces please).'
-				save = gets.chomp
+				save = gets.downcase.chomp
 				save_file = File.new("saves/#{save}.yaml", "w")
 				save_file.write(yaml)
 				save_file.close
@@ -124,7 +124,7 @@ module Chess
 				puts saves
 
 				puts "Enter the file name you wish to load. i.e 'hello.yaml'."
-				load_file = gets.strip
+				load_file = gets.downcase.strip
 				yaml = "saves/#{load_file}"
 				if saves.include?(load_file)
 					load = YAML::load_file(yaml)
