@@ -21,7 +21,7 @@ module Chess
 					new_game
 				when 'q'
 					puts "Thanks for playing\n"
-					return
+					exit
 				when 'd'
 					delete_game
 				else
@@ -86,12 +86,12 @@ module Chess
 				"#{current_player.name}(#{current_player.color}): Where would you like to move your piece?"
 			end
 
-			def get_move(first = false, human_move = gets.upcase.chomp)
-				if human_move == 'SAVE'
+			def get_move(first = false, human_move = gets.downcase.chomp)
+				if human_move == 'save'
 					save_game
 					return menu
 				end
-				return menu if human_move == 'MENU'
+				return menu if human_move == 'menu'
 				if human_move !~ /[a-hA-H][0-9]/
 					puts "Invalid Move"
 					return get_move(true)
@@ -121,9 +121,8 @@ module Chess
 
 			def load_game
 				saves = check_save_files
-				puts saves
-
 				puts "Enter the file name you wish to load. i.e 'hello.yaml'."
+				puts saves
 				load_file = gets.downcase.strip
 				yaml = "saves/#{load_file}"
 				if saves.include?(load_file)
@@ -150,9 +149,10 @@ module Chess
 			def delete_game
 				saves = check_save_files
 				puts "Enter the file name you wish to delete."
-				delete_file = gets.strip
+				puts saves
+				delete_file = gets.downcase.strip
 				file = "saves/#{delete_file}"
-				if saves.include?(file)
+				if saves.include?(delete_file)
 					File.delete(file)
 					puts "File deleted successfully!"
 				else
@@ -176,14 +176,14 @@ module Chess
 					"6" => 2,
 					"7" => 1,
 					"8" => 0,
-					"A" => 0,
-					"B" => 1,
-					"C" => 2,
-					"D" => 3,
-					"E" => 4,
-					"F" => 5,
-					"G" => 6,
-					"H" => 7
+					"a" => 0,
+					"b" => 1,
+					"c" => 2,
+					"d" => 3,
+					"e" => 4,
+					"f" => 5,
+					"g" => 6,
+					"h" => 7
 				}
 				mapping[input]
 			end
