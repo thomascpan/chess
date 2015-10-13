@@ -86,7 +86,7 @@ module Chess
 				"#{current_player.name}(#{current_player.color}): Where would you like to move your piece?"
 			end
 
-			def get_move(first = false, human_move = gets.chomp)
+			def get_move(first = false, human_move = gets.upcase.chomp)
 				if human_move == 'save'
 					save_game
 					return menu
@@ -176,14 +176,14 @@ module Chess
 					"6" => 2,
 					"7" => 1,
 					"8" => 0,
-					"a" => 0,
-					"b" => 1,
-					"c" => 2,
-					"d" => 3,
-					"e" => 4,
-					"f" => 5,
-					"g" => 6,
-					"h" => 7
+					"A" => 0,
+					"B" => 1,
+					"C" => 2,
+					"D" => 3,
+					"E" => 4,
+					"F" => 5,
+					"G" => 6,
+					"H" => 7
 				}
 				mapping[input]
 			end
